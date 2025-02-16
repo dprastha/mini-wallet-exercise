@@ -22,6 +22,8 @@ type DatabaseCredentials struct {
 	TimeZone string
 }
 
+var DB *gorm.DB
+
 func InitDb(databaseCredentials *DatabaseCredentials) (*gorm.DB, error) {
 
 	connectionString := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s"
@@ -76,6 +78,8 @@ func InitDb(databaseCredentials *DatabaseCredentials) (*gorm.DB, error) {
 	log.Println("DBMaxOpenConn : ", maxOpenConn)
 	log.Println("DBConnMaxIdleTime : ", connMaxIdleTime)
 	log.Println("DBConnMaxLifetime : ", connMaxLifetime)
+
+	DB = db
 
 	return db, errors
 }

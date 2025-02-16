@@ -12,6 +12,9 @@ type CustomerEntity struct {
 	Token       uuid.UUID `gorm:"type:uuid;not null;unique" json:"token"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+
+	// Relationship
+	Wallet WalletEntity `gorm:"foreignKey:CustomerID;references:ID" json:"wallet"`
 }
 
 func (CustomerEntity) TableName() string {

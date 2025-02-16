@@ -12,6 +12,9 @@ import (
 
 	customerRepo "mini-wallet-exercise/app/customer/repository"
 	customerUC "mini-wallet-exercise/app/customer/usecase"
+
+	walletRepo "mini-wallet-exercise/app/wallet/repository"
+	walletUC "mini-wallet-exercise/app/wallet/usecase"
 )
 
 func initializeDatabase() *gorm.DB {
@@ -40,12 +43,15 @@ func setupRouter() *gin.Engine {
 func initializeModule(db *gorm.DB, router *gin.Engine) {
 	// Initialize repository
 	customerRepository := customerRepo.NewCustomerRepository(db)
+	walletRepository := walletRepo.NewWalletRepository(db)
 
 	// Initialize usecase
 	customerUsecase := customerUC.NewCustomerUsecase(customerRepository)
+	walletUsecase := walletUC.NewWalletUsecase(walletRepository)
 
 	// Initialize handler
 	handler.NewCustomerHandler(router, customerUsecase)
+	handler.NewWalletHandler(router, walletUsecase)
 }
 
 func main() {
