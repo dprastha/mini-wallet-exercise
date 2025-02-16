@@ -3,13 +3,16 @@ package handler
 import (
 	"mini-wallet-exercise/app/customer/domain"
 	"mini-wallet-exercise/app/customer/dto"
+	"mini-wallet-exercise/app/customer/response"
 	"mini-wallet-exercise/entities"
 	"mini-wallet-exercise/interface/http/middleware"
 	"mini-wallet-exercise/interface/http/singleton"
+	"mini-wallet-exercise/pkg"
 	"mini-wallet-exercise/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type CustomerHandler struct {
@@ -29,13 +32,26 @@ func NewCustomerHandler(router *gin.Engine, customerUsecase domain.CustomerUseca
 func (h *CustomerHandler) Init() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		request := singleton.GetHTTPRequest[dto.InitializeWalletAccountRequest](ctx)
+		// Convert CustomerXID to UUID
+		customerXID, err := uuid.Parse(request.CustomerXID)
+		if err != nil {
+			errorMessage := pkg.ErrorMessage{
+				Error: "Invalid CustomerXID",
+			}
+			ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(errorMessage))
+			return
+		}
 
 		customer := entities.CustomerEntity{
-			CustomerXID: request.CustomerXID,
+			CustomerXID: customerXID,
 		}
 
 		token := h.customerUsecase.Init(ctx, &customer)
 
-		ctx.JSON(http.StatusOK, utils.SuccessResponse(token))
+		response := response.InitResponse{
+			Token: token,
+		}
+
+		ctx.JSON(http.StatusOK, utils.SuccessResponse(response))
 	}
 }

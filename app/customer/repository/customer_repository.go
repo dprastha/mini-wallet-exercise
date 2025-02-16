@@ -36,7 +36,7 @@ func (r *CustomerRepository) FindOneByCustomerXID(ctx *gin.Context, customerXID 
 		Where("customer_xid = ?", customerXID).
 		First(&customer).Error
 	if err == gorm.ErrRecordNotFound {
-		panic(*exception.NotFoundException("customer not found"))
+		return nil
 	} else if err != nil {
 		log.Println("error find one by customer xid: ", err)
 		panic(*exception.ServerErrorException(err))

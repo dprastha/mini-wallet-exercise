@@ -61,8 +61,11 @@ func ValidateRequestFormData[T any]() gin.HandlerFunc {
 					}
 				}
 
+				fmt.Println("error validation", errors)
+
 				httpContext.JSON(http.StatusBadRequest, utils.ErrorValidationResponse(errors))
 			} else {
+				fmt.Println("error else", err)
 				httpContext.JSON(http.StatusBadRequest, utils.ErrorValidationResponse(err.Error()))
 			}
 
